@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>ระบบเยี่ยมบ้านนักเรียน</title>
+  <meta name="description" content="ระบบลงทะเบียนเยี่ยมบ้านนักเรียน" />
+  <meta name="theme-color" content="#4f46e5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="เยี่ยมบ้าน" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta property="og:title" content="ระบบเยี่ยมบ้านนักเรียน" />
+  <meta property="og:description" content="ลงทะเบียนแจ้งที่อยู่สำหรับการเยี่ยมบ้านนักเรียน" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="school-badge"><span class="school-emoji">🏫</span></div>
+      <h1 class="hero-title">ระบบเยี่ยมบ้านนักเรียน</h1>
+      <p class="hero-subtitle">Home Visit Registration System</p>
+      <p class="hero-desc">ผู้ปกครองสามารถลงทะเบียนแจ้งที่อยู่บ้าน<br>เพื่อความสะดวกในการเยี่ยมเยือนของคณะครู</p>
+      <a href="#register-section" class="hero-btn" id="heroScrollBtn">
+        <span>ลงทะเบียนแจ้งที่อยู่</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="hero-wave">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,60 C360,120 1080,0 1440,60 L1440,120 L0,120 Z" fill="#f0f4ff"/></svg>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content" id="register-section">
+    <section class="steps-section">
+      <div class="container">
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-icon step-icon-1">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <h3>กรอกข้อมูล</h3>
+            <p>ชื่อ ชั้น และเลขที่</p>
+          </div>
+          <div class="step-arrow">›</div>
+          <div class="step-card">
+            <div class="step-icon step-icon-2">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <h3>ปักหมุดบ้าน</h3>
+            <p>เลือกบนแผนที่</p>
+          </div>
+          <div class="step-arrow">›</div>
+          <div class="step-card">
+            <div class="step-icon step-icon-3">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h3>ส่งข้อมูล</h3>
+            <p>ครูจะมาเยี่ยม</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="container">
+        <div class="form-card">
+          <div class="form-header">
+            <div class="form-header-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <div>
+              <h2>ลงทะเบียนเยี่ยมบ้าน</h2>
+              <p>กรุณากรอกข้อมูลให้ครบถ้วน</p>
+            </div>
+          </div>
+
+          <form id="visitForm" class="visit-form" novalidate>
+            <div class="section-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              ข้อมูลผู้ปกครอง
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="parentName">ชื่อผู้ปกครอง <span class="required">*</span></label>
+                <input type="text" id="parentName" placeholder="ชื่อ-นามสกุลผู้ปกครอง" autocomplete="name" required />
+              </div>
+              <div class="form-group">
+                <label for="parentPhone">เบอร์โทรศัพท์ <span class="required">*</span></label>
+                <input type="tel" id="parentPhone" placeholder="0xx-xxx-xxxx" autocomplete="tel" inputmode="tel" required />
+              </div>
+            </div>
+
+            <div class="section-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              ข้อมูลนักเรียน
+            </div>
+            <div class="form-group" id="schoolSelectGroup">
+              <label for="schoolSelect">โรงเรียน <span class="required">*</span></label>
+              <select id="schoolSelect" required>
+                <option value="">-- กำลังโหลดรายชื่อโรงเรียน... --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="studentName">ชื่อนักเรียน <span class="required">*</span></label>
+              <input type="text" id="studentName" placeholder="ชื่อ-นามสกุลนักเรียน" autocomplete="off" required />
+            </div>
+            <div class="form-row form-row-3">
+              <div class="form-group">
+                <label for="studentLevel">ระดับชั้น <span class="required">*</span></label>
+                <select id="studentLevel" required>
+                  <option value="">-- เลือก --</option>
+                  <optgroup label="ประถมศึกษา">
+                    <option value="ป.1">ป.1</option><option value="ป.2">ป.2</option>
+                    <option value="ป.3">ป.3</option><option value="ป.4">ป.4</option>
+                    <option value="ป.5">ป.5</option><option value="ป.6">ป.6</option>
+                  </optgroup>
+                  <optgroup label="มัธยมศึกษาตอนต้น">
+                    <option value="ม.1">ม.1</option><option value="ม.2">ม.2</option><option value="ม.3">ม.3</option>
+                  </optgroup>
+                  <optgroup label="มัธยมศึกษาตอนปลาย">
+                    <option value="ม.4">ม.4</option><option value="ม.5">ม.5</option><option value="ม.6">ม.6</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="studentRoom">ห้อง <span class="required">*</span></label>
+                <select id="studentRoom" required>
+                  <option value="">-- เลือก --</option>
+                  <option value="1">ห้อง 1</option><option value="2">ห้อง 2</option>
+                  <option value="3">ห้อง 3</option><option value="4">ห้อง 4</option>
+                  <option value="5">ห้อง 5</option><option value="6">ห้อง 6</option>
+                  <option value="7">ห้อง 7</option><option value="8">ห้อง 8</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="studentNumber">เลขที่ <span class="required">*</span></label>
+                <input type="number" id="studentNumber" placeholder="1" min="1" max="50" inputmode="numeric" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="visitNote">หมายเหตุ / วันที่สะดวก</label>
+              <textarea id="visitNote" rows="2" placeholder="เช่น สะดวกวันเสาร์-อาทิตย์, มีสุนัข กรุณาโทรก่อน..."></textarea>
+            </div>
+
+            <div class="section-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              ที่อยู่และตำแหน่งบ้าน
+            </div>
+            <div class="form-group">
+              <label for="addressText">ที่อยู่โดยย่อ <span class="required">*</span></label>
+              <input type="text" id="addressText" placeholder="เช่น 12/3 หมู่ 4 ต.บางเขน อ.เมือง จ.นนทบุรี" autocomplete="street-address" required />
+            </div>
+
+            <div class="map-container" id="mapContainer">
+              <div class="map-toolbar">
+                <div class="map-info">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  <span>แตะบนแผนที่เพื่อปักหมุดบ้าน</span>
+                </div>
+                <div class="map-actions">
+                  <button type="button" id="useMyLocation" class="map-btn map-btn-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+                    <span>ตำแหน่งฉัน</span>
+                  </button>
+                  <button type="button" id="clearPin" class="map-btn map-btn-danger" style="display:none">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <span>ลบ</span>
+                  </button>
+                </div>
+              </div>
+              <div id="map" class="map-frame"></div>
+              <div class="pin-info" id="pinInfo" style="display:none">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <div class="pin-text"><strong>พิกัด:</strong> <span id="pinCoords">—</span></div>
+                <a id="mapLink" href="#" target="_blank" rel="noopener" class="open-map-btn">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  Google Maps
+                </a>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-submit" id="submitBtn">
+                <span class="btn-submit-text">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  ส่งข้อมูลเยี่ยมบ้าน
+                </span>
+                <span class="btn-submit-loading" style="display:none">
+                  <svg class="spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                  กำลังบันทึก...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== SUCCESS MODAL ===== -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal success-modal">
+      <div class="success-animation"><div class="success-circle">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div></div>
+      <h2>ส่งข้อมูลสำเร็จ! 🎉</h2>
+      <p>ขอบคุณที่ลงทะเบียนเยี่ยมบ้าน<br>คณะครูจะติดต่อกลับก่อนเดินทาง</p>
+      <div class="success-detail" id="successDetail"></div>
+      <button class="btn-close-modal" id="closeSuccess">เสร็จสิ้น</button>
+    </div>
+  </div>
+
+  <!-- ===== TEACHER LOGIN MODAL ===== -->
+  <div class="modal-overlay" id="teacherLoginModal">
+    <div class="modal teacher-login-modal">
+      <button class="modal-close-btn" id="closeTeacherLogin">✕</button>
+      <div class="teacher-modal-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h2>ระบบสำหรับครู</h2>
+      <p>กรุณากรอกรหัสโรงเรียนและรหัสผ่าน</p>
+      
+      <form id="teacherLoginForm" class="admin-form">
+        <div class="form-group">
+          <label>รหัสโรงเรียน</label>
+          <input type="text" id="loginSchoolCode" required placeholder="เช่น SC001">
+        </div>
+        <div class="form-group">
+          <label>รหัสผ่านครู</label>
+          <input type="password" id="loginTeacherPassword" required placeholder="รหัสผ่าน 6 หลัก">
+        </div>
+        <p class="pin-error" id="teacherLoginError" style="margin-top:-10px;margin-bottom:10px;text-align:center;"></p>
+        <button type="submit" class="btn-submit" id="btnTeacherLoginSubmit">
+          <span class="btn-submit-text">เข้าสู่ระบบ</span>
+          <span class="btn-submit-loading" style="display:none;">กำลังตรวจสอบ...</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== TEACHER DASHBOARD ===== -->
+  <div class="modal-overlay full-overlay" id="teacherDashboard">
+    <div class="modal dashboard-modal">
+      <div class="dashboard-header">
+        <div class="dashboard-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div><h2>แผงควบคุมครู</h2><p>ระบบเยี่ยมบ้านนักเรียน</p></div>
+        </div>
+        <div class="dashboard-actions">
+          <!-- Teacher Location Button -->
+          <button class="btn-teacher-loc" id="getTeacherLocBtn" title="ดึงตำแหน่งครูเพื่อคำนวณระยะทาง">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+            <span>📍 ตำแหน่งครู</span>
+          </button>
+          <!-- Map View Button -->
+          <button class="btn-map-view" id="openTeacherMapBtn" title="ดูแผนที่บ้านนักเรียนทั้งหมด">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+            <span>🗺️ แผนที่</span>
+          </button>
+          <button class="btn-refresh" id="refreshBtn" title="รีเฟรช">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+          </button>
+          <button class="btn-export" id="exportBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>CSV</span>
+          </button>
+          <button class="btn-close-dashboard" id="closeDashboard">✕</button>
+        </div>
+      </div>
+
+      <!-- Stats Bar (4 items) -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-num" id="statTotal">—</span>
+          <span class="stat-label">ทั้งหมด</span>
+        </div>
+        <div class="stat-item stat-visited">
+          <span class="stat-num" id="statVisited">—</span>
+          <span class="stat-label">เยี่ยมแล้ว ✅</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="statWithPin">—</span>
+          <span class="stat-label">มีพิกัด 📍</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="statNoPin">—</span>
+          <span class="stat-label">ไม่มีพิกัด</span>
+        </div>
+      </div>
+
+      <!-- Map Legend -->
+      <div class="map-legend-bar">
+        <span class="legend-title">สัญลักษณ์:</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#4f46e5"></span>ปกติ</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>ยังไม่ได้ไป</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>ไปแล้ว</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>นัดไว้</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>ด่วน</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#9ca3af"></span>หมายเหตุ</span>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <input type="search" id="searchInput" placeholder="🔍 ค้นหาชื่อ / ชั้น / ที่อยู่..." class="search-input" />
+        <select id="filterLevel" class="filter-select">
+          <option value="">ทุกชั้น</option>
+          <option value="ป.1">ป.1</option><option value="ป.2">ป.2</option>
+          <option value="ป.3">ป.3</option><option value="ป.4">ป.4</option>
+          <option value="ป.5">ป.5</option><option value="ป.6">ป.6</option>
+          <option value="ม.1">ม.1</option><option value="ม.2">ม.2</option>
+          <option value="ม.3">ม.3</option><option value="ม.4">ม.4</option>
+          <option value="ม.5">ม.5</option><option value="ม.6">ม.6</option>
+        </select>
+        <select id="filterVisited" class="filter-select">
+          <option value="">ทุกสถานะ</option>
+          <option value="notVisited">🔲 ยังไม่ได้ไป</option>
+          <option value="visited">✅ เยี่ยมแล้ว</option>
+        </select>
+        <label class="sort-dist-label" title="ต้องกด 'ตำแหน่งครู' ก่อน">
+          <input type="checkbox" id="sortByDist" />
+          <span>เรียงตามระยะทาง</span>
+        </label>
+      </div>
+
+      <div class="records-container" id="recordsContainer">
+        <div class="loading-state" id="loadingState">
+          <svg class="spin" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          <p>กำลังโหลดข้อมูล...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TEACHER MAP MODAL ===== -->
+  <div class="modal-overlay full-overlay" id="teacherMapModal">
+    <div class="modal teacher-map-modal">
+      <div class="teacher-map-header">
+        <div class="teacher-map-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          <h2>แผนที่บ้านนักเรียนทั้งหมด</h2>
+        </div>
+        <div class="teacher-map-controls">
+          <input type="search" id="mapStudentSearch" placeholder="🔍 ค้นหานักเรียน..." class="map-search-input" />
+          <button class="btn-close-dashboard" id="closeTeacherMap">✕ ปิด</button>
+        </div>
+      </div>
+      <div id="teacherMapView" class="teacher-map-view"></div>
+      <!-- Map Legend on map -->
+      <div class="map-bottom-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#4f46e5"></span>ปกติ</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>ยังไม่ได้ไป</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>ไปแล้ว</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>นัดไว้</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>ด่วน</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#6366f1"></span>ตำแหน่งครู</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN LOGIN MODAL ===== -->
+  <div class="modal-overlay" id="adminLoginModal">
+    <div class="modal teacher-login-modal">
+      <button class="modal-close-btn" id="closeAdminLogin">✕</button>
+      <div class="teacher-modal-icon" style="background:#ef4444;color:white;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2 style="color: #334155;">ผู้ดูแลระบบ (Admin)</h2>
+      <p style="color: #64748b;">กรุณากรอกรหัสผ่านผู้ดูแลระบบ</p>
+      <form id="adminLoginForm" class="admin-form">
+        <div class="form-group">
+          <input type="password" id="loginAdminPassword" required placeholder="รหัสผ่าน Admin" style="text-align:center; letter-spacing:2px; font-size:1.1rem; padding:14px; border-radius:12px;">
+        </div>
+        <p class="pin-error" id="adminLoginError" style="margin-top:-10px;margin-bottom:10px;text-align:center;"></p>
+        <button type="submit" class="btn-submit" id="btnAdminLoginSubmit" style="background: linear-gradient(135deg, #334155, #1e293b); box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2); border-radius:12px;">
+          <span class="btn-submit-text">เข้าสู่ระบบ</span>
+          <span class="btn-submit-loading" style="display:none;">กำลังตรวจสอบ...</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN DASHBOARD ===== -->
+  <div class="modal-overlay full-overlay" id="adminDashboard" style="background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px);">
+    <div class="modal dashboard-modal" style="max-width: 700px; background: #f8fafc; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+      <div class="dashboard-header" style="background: linear-gradient(135deg, #334155, #1e293b); padding: 24px; border-bottom: none;">
+        <div class="dashboard-title">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" style="margin-right: 12px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <div>
+            <h2 style="font-size: 1.4rem; font-weight: 600; color: #fff; margin-bottom: 4px;">จัดการข้อมูลโรงเรียน</h2>
+            <p style="color: #cbd5e1; font-size: 0.9rem;">ส่วนควบคุมส่วนกลางสำหรับ Admin</p>
+          </div>
+        </div>
+        <div class="dashboard-actions">
+          <button class="btn-refresh" id="refreshAdminBtn" title="รีเฟรช" style="background: rgba(255,255,255,0.1); color: #fff; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+          </button>
+          <button class="btn-close-dashboard" id="closeAdminDashboard" style="color: #fff; background: rgba(255,255,255,0.1); border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold;">✕</button>
+        </div>
+      </div>
+
+      <div style="padding: 24px; background: #fff; border-bottom: 1px solid #e2e8f0;">
+        <h3 style="font-size: 1.1rem; color: #334155; margin-bottom: 16px; font-weight: 600;">➕ เพิ่มโรงเรียนใหม่</h3>
+        <form id="addSchoolForm" class="admin-form" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end; background: #f1f5f9; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0;">
+          <div class="form-group" style="flex:1;min-width:120px;margin:0;">
+            <label style="color: #475569; font-weight: 600;">รหัสโรงเรียน</label>
+            <input type="text" id="addSchoolCode" required placeholder="SC001" style="background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; font-weight: 500;">
+          </div>
+          <div class="form-group" style="flex:2;min-width:200px;margin:0;">
+            <label style="color: #475569; font-weight: 600;">ชื่อโรงเรียน</label>
+            <input type="text" id="addSchoolName" required placeholder="ตัวอย่าง: โรงเรียนบ้านหนองหว้า" style="background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px;">
+          </div>
+          <div class="form-group" style="flex:1;min-width:120px;margin:0;">
+            <label style="color: #475569; font-weight: 600;">รหัสผ่านครู</label>
+            <input type="text" id="addSchoolTeacherPassword" required placeholder="123456" style="background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 1.1rem; letter-spacing: 1px;">
+          </div>
+          <button type="submit" class="btn-submit" id="btnAddSchool" style="width:auto;margin:0;padding:12px 24px; background: #3b82f6; border-radius: 8px; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2); font-weight: 600; font-size: 0.95rem;">
+            <span class="btn-submit-text">+ บันทึกโรงเรียน</span>
+            <span class="btn-submit-loading" style="display:none;">กำลังบันทึก...</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="records-container" id="adminSchoolsContainer" style="background: #f8fafc; padding: 24px; display: grid; gap: 16px;">
+        <div class="loading-state" id="adminLoadingState" style="grid-column: 1 / -1;">
+          <svg class="spin" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          <p style="color: #64748b; margin-top: 12px;">กำลังโหลดข้อมูลโรงเรียน...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TEACHER SHIELD BUTTON ===== -->
+  <button class="teacher-shield-btn" id="teacherShieldBtn" title="ระบบครู" aria-label="เข้าระบบครู">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="shield-icon">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="shield-tooltip">ระบบครู</span>
+  </button>
+
+  <!-- ===== ADMIN BUTTON ===== -->
+  <button class="teacher-shield-btn" id="adminShieldBtn" title="ระบบ Admin" aria-label="เข้าระบบ Admin" style="bottom: 80px; background: #ef4444;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="shield-icon" style="color:white;">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+    <span class="shield-tooltip">Admin</span>
+  </button>
+
+  <footer class="site-footer">
+    <p>© 2024 ระบบเยี่ยมบ้านนักเรียน | พัฒนาเพื่อการศึกษา</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="app.js"></script>
+</body>
+</html>
